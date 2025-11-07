@@ -1,0 +1,7 @@
+{
+    "python.terminal.activateEnvironment": false,
+    "code-runner.defaultLanguage": "python",
+    "code-runner.executorMap": {
+        "python": "python",
+    },
+}
