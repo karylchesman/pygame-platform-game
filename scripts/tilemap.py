@@ -1,5 +1,4 @@
 from __future__ import annotations
-from tabnanny import check
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -18,6 +17,8 @@ NEIGHBOR_OFFSETS = [
     (0, 1),
     (1, 1),
 ]
+
+PHYSICS_TILES = {"grass", "stone"}
 
 
 class TileMap:
@@ -49,6 +50,20 @@ class TileMap:
             if check_loc in self.tile_map:
                 tiles.append(self.tile_map[check_loc])
         return tiles
+
+    def physics_rects_around(self, pos):
+        rects = []
+        for tile in self.tiles_around(pos):
+            if tile["type"] in PHYSICS_TILES:
+                rects.append(
+                    pygame.Rect(
+                        tile["pos"][0] * self.tile_size,
+                        tile["pos"][1] * self.tile_size,
+                        self.tile_size,
+                        self.tile_size,
+                    )
+                )
+        return rects
 
     def render(self, surf: pygame.Surface):
         for tile in self.off_grid_tiles:
