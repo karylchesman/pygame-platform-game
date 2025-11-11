@@ -31,15 +31,31 @@ class Game:
         self.player = PhysicsEntity(self, "player", (50, 50), (8, 15))
 
         self.tile_map = TileMap(self, tile_size=16)
+        self.scroll = [0.0, 0.0]
 
     def run(self):
         while True:
             self.display.fill((14, 219, 248))
 
-            self.tile_map.render(self.display)
+            self.scroll[0] += (
+                # The X position of the center of the player in the world, not on display
+                self.player.rect().centerx
+                # The camera is positioned in the top-left corner, so we subtract half the display width
+                - self.display.get_width() / 2
+                - self.scroll[0]
+            ) / 30
+            self.scroll[1] += (
+                self.player.rect().centery
+                - self.display.get_height() / 2
+                - self.scroll[1]
+            ) / 30
+
+            render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
+
+            self.tile_map.render(self.display, offset=render_scroll)
 
             self.player.update(self.tile_map, (self.movement[1] - self.movement[0], 0))
-            self.player.render(self.display)
+            self.player.render(self.display, offset=render_scroll)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

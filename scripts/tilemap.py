@@ -65,16 +65,18 @@ class TileMap:
                 )
         return rects
 
-    def render(self, surf: pygame.Surface):
+    def render(self, surf: pygame.Surface, offset=(0, 0)):
         for tile in self.off_grid_tiles:
             surf.blit(
                 self.game.assets[tile["type"]][tile["variant"]],
-                tile["pos"],
+                (tile["pos"][0] - offset[0], tile["pos"][1] - offset[1]),
             )
 
-        for location in self.tile_map:
-            tile = self.tile_map[location]
+        for tile in self.tile_map.values():
             surf.blit(
                 self.game.assets[tile["type"]][tile["variant"]],
-                (tile["pos"][0] * self.tile_size, tile["pos"][1] * self.tile_size),
+                (
+                    tile["pos"][0] * self.tile_size - offset[0],
+                    tile["pos"][1] * self.tile_size - offset[1],
+                ),
             )
