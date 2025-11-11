@@ -27,6 +27,7 @@ class Game:
             "large_decor": load_images("/tiles/large_decor"),
             "stone": load_images("/tiles/stone"),
             "player": load_image("/entities/player.png"),
+            "background": load_image("/background.png"),
         }
         self.player = PhysicsEntity(self, "player", (50, 50), (8, 15))
 
@@ -35,7 +36,7 @@ class Game:
 
     def run(self):
         while True:
-            self.display.fill((14, 219, 248))
+            self.display.blit(self.assets["background"], (0, 0))
 
             self.scroll[0] += (
                 # The X position of the center of the player in the world, not on display
