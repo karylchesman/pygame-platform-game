@@ -87,6 +87,15 @@ class Editor:
                                 self.tiles_list
                             )
                             self.tile_variant = 0
+
+                if event.type == pygame.MOUSEBUTTONUP:
+                    # left click
+                    if event.button == 1:
+                        self.clicking = False
+                    # right click
+                    if event.button == 3:
+                        self.right_clicking = False
+
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
                         self.movement[0] = True
