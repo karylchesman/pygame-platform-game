@@ -58,6 +58,14 @@ class Editor:
                 int((mpos[1] + render_scroll[1]) // self.tile_map.tile_size),
             )
 
+            self.display.blit(
+                current_tile_img,
+                (
+                    tile_pos[0] * self.tile_map.tile_size - render_scroll[0],
+                    tile_pos[1] * self.tile_map.tile_size - render_scroll[1],
+                ),
+            )
+
             if self.clicking:
                 self.tile_map.tile_map[str(tile_pos[0]) + ";" + str(tile_pos[1])] = {
                     "type": self.tiles_list[self.tile_group],
