@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from game import Game
 
+import json
 import pygame
 
 NEIGHBOR_OFFSETS = [
@@ -87,3 +88,13 @@ class TileMap:
         #             tile["pos"][1] * self.tile_size - offset[1],
         #         ),
         #     )
+
+    def save(self, filename):
+        with open(filename, "w") as f:
+            json.dump(
+                {
+                    "tile_map": self.tile_map,
+                    "off_grid_tiles": self.off_grid_tiles,
+                },
+                f,
+            )
