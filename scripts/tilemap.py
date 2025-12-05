@@ -94,7 +94,15 @@ class TileMap:
             json.dump(
                 {
                     "tile_map": self.tile_map,
+                    "tile_size": self.tile_size,
                     "off_grid_tiles": self.off_grid_tiles,
                 },
                 f,
             )
+
+    def load(self, filename):
+        with open(filename, "r") as f:
+            data = json.load(f)
+            self.tile_map = data["tile_map"]
+            self.tile_size = data["tile_size"]
+            self.off_grid_tiles = data["off_grid_tiles"]

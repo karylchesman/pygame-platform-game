@@ -28,6 +28,10 @@ class Editor:
         self.movement = [False, False, False, False]
 
         self.tile_map = TileMap(self, tile_size=16)
+        try:
+            self.tile_map.load("map.json")
+        except FileNotFoundError:
+            pass
         self.scroll = [0.0, 0.0]
 
         self.tiles_list = list(self.assets)
