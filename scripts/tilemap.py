@@ -20,6 +20,18 @@ NEIGHBOR_OFFSETS = [
 ]
 
 PHYSICS_TILES = {"grass", "stone"}
+AUTO_TILE_TYPES = {"grass", "stone"}
+AUTO_TILE_RULE_MAP = {
+    tuple(sorted([(1, 0), (0, 1)])): 0,
+    tuple(sorted([(1, 0), (0, 1), (-1, 0)])): 1,
+    tuple(sorted([(-1, 0), (0, 1)])): 2,
+    tuple(sorted([(-1, 0), (0, -1), (0, 1)])): 3,
+    tuple(sorted([(-1, 0), (0, -1)])): 4,
+    tuple(sorted([(-1, 0), (0, -1), (1, 0)])): 5,
+    tuple(sorted([(1, 0), (0, -1)])): 6,
+    tuple(sorted([(1, 0), (0, -1), (0, 1)])): 7,
+    tuple(sorted([(1, 0), (-1, 0), (0, 1), (0, -1)])): 8,
+}
 
 
 class TileMap:
@@ -53,6 +65,25 @@ class TileMap:
                     )
                 )
         return rects
+
+    def auto_tile(self):
+        for loc in self.tile_map:
+            tile = self.tile_map[loc]
+            neighbors = set()
+            for shift in [(1, 0), (-1, 0), (0, -1), (0, 1)]:
+                check_loc = (
+                    str(tile["pos"][0] + shift[0])
+                    + ";"
+                    + str(tile["pos"][1] + shift[1])
+                )
+                if check_loc in self.tile_map:
+                    if self.tile_map[check_loc]["type"] == tile["type"]:
+                        neighbors.add(shift)
+            neighbors_tuple = tuple(sorted(neighbors))
+            if (tile["type"] in AUTO_TILE_TYPES) and (
+                neighbors_tuple in AUTO_TILE_RULE_MAP
+            ):
+                tile["variant"] = AUTO_TILE_RULE_MAP[neighbors_tuple]
 
     def render(self, surf: pygame.Surface, offset=(0, 0)):
         for tile in self.off_grid_tiles:
