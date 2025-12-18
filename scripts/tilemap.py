@@ -41,6 +41,26 @@ class TileMap:
         self.tile_map = {}
         self.off_grid_tiles = []
 
+    def extract(self, id_pairs, keep=False):
+        matches = []
+        for tile in self.off_grid_tiles.copy():
+            if (tile["type"], tile["variant"]) in id_pairs:
+                matches.append(tile.copy())
+                if not keep:
+                    self.off_grid_tiles.remove(tile)
+        for loc in self.tile_map:
+            tile = self.tile_map[loc]
+            if (tile["type"], tile["variant"]) in id_pairs:
+                matches.append(tile.copy())
+                # this line bellow is because we store the position of a tile as tile coordinates
+                # and we want the position in this method as pixel coordinates but we don't want to modify the original tile data
+                matches[-1]["pos"] = matches[-1]["pos"].copy()
+                matches[-1]["pos"][0] *= self.tile_size
+                matches[-1]["pos"][1] *= self.tile_size
+                if not keep:
+                    del self.tile_map[loc]
+        return matches
+
     def tiles_around(self, pos):
         tiles = []
         tile_loc = (int(pos[0] // self.tile_size), int(pos[1] // self.tile_size))
