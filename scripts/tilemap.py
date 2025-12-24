@@ -72,6 +72,17 @@ class TileMap:
                 tiles.append(self.tile_map[check_loc])
         return tiles
 
+    def solid_check(self, pos):
+        tile_loc = (
+            str(int(pos[0] // self.tile_size))
+            + ";"
+            + str(int(pos[1] // self.tile_size))
+        )
+        if tile_loc in self.tile_map:
+            if self.tile_map[tile_loc]["type"] in PHYSICS_TILES:
+                return self.tile_map[tile_loc]
+        return None
+
     def physics_rects_around(self, pos):
         rects = []
         for tile in self.tiles_around(pos):

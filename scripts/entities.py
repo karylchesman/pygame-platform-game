@@ -95,6 +95,35 @@ class PhysicsEntity:
         # )
 
 
+class Enemy(PhysicsEntity):
+    def __init__(self, game: Game, pos, size):
+        super().__init__(game, "enemy", pos, size)
+
+        self.walking = 0
+
+    def update(self, tile_map, movement=(0, 0)):
+        if self.walking:
+            if tile_map.solid_check(
+                (self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 23)
+            ):
+                if self.collisions["left"] or self.collisions["right"]:
+                    self.flip = not self.flip
+                else:
+                    movement = (movement[0] - 0.5 if self.flip else 0.5, movement[1])
+            else:
+                self.flip = not self.flip
+            self.walking = max(0, self.walking - 1)
+        elif random.random() < 0.01:
+            self.walking = random.randint(30, 120)
+
+        if movement[0] != 0:
+            self.set_action("run")
+        else:
+            self.set_action("idle")
+
+        super().update(tile_map, movement=movement)
+
+
 class Player(PhysicsEntity):
     def __init__(self, game: Game, pos, size):
         super().__init__(game, "player", pos, size)
