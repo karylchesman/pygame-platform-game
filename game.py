@@ -46,6 +46,7 @@ class Game:
             "particle/particle": Animation(
                 load_images("/particles/particle"), img_dur=6, loop=False
             ),
+            "gun": load_image("/gun.png"),
         }
         self.clouds = Clouds(self.assets["clouds"], count=16)
 
