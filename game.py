@@ -57,6 +57,7 @@ class Game:
         self.enemies = []
         self.particles = []
         self.projectiles = []
+        self.sparks = []
         self.scroll = [0.0, 0.0]
 
         self.tile_map = TileMap(self, tile_size=16)
@@ -79,6 +80,7 @@ class Game:
 
         self.particles = []
         self.projectiles = []
+        self.sparks = []
 
         self.scroll = [0.0, 0.0]
 
@@ -146,6 +148,12 @@ class Game:
                 elif abs(self.player.dashing) < 50:
                     if self.player.rect().collidepoint(projectile[0]):
                         self.projectiles.remove(projectile)
+
+            for spark in self.sparks.copy():
+                kill = spark.update()
+                spark.render(self.display, offset=render_scroll)
+                if kill:
+                    self.sparks.remove(spark)
 
             for particle in self.particles.copy():
                 kill = particle.update()
