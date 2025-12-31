@@ -1,10 +1,11 @@
 from __future__ import annotations
+
+import math
 import random
 from typing import TYPE_CHECKING
 
 from scripts.particle import Particle
 from scripts.spark import Spark
-import math
 
 if TYPE_CHECKING:
     from game import Game
@@ -115,7 +116,6 @@ class Enemy(PhysicsEntity):
                 self.flip = not self.flip
             self.walking = max(0, self.walking - 1)
             if not self.walking:
-
                 dis = (
                     # This is a vector from enemy to player.
                     # In vectors subtraction, we subtract the components individually
@@ -154,12 +154,44 @@ class Enemy(PhysicsEntity):
         elif random.random() < 0.01:
             self.walking = random.randint(30, 120)
 
+        super().update(tile_map, movement=movement)
+
         if movement[0] != 0:
             self.set_action("run")
         else:
             self.set_action("idle")
 
-        super().update(tile_map, movement=movement)
+        if abs(self.game.player.dashing) >= 50:
+            if self.rect().colliderect(self.game.player.rect()):
+                for i in range(30):
+                    angle = random.random() * math.pi * 2
+                    speed = random.random() * 5
+                    self.game.sparks.append(
+                        Spark(
+                            self.rect().center,
+                            angle,
+                            2 + random.random(),
+                        )
+                    )
+                    self.game.particles.append(
+                        Particle(
+                            self.game,
+                            "particle",
+                            self.rect().center,
+                            velocity=[
+                                math.cos(angle + math.pi) * speed * 0.5,
+                                math.sin(angle + math.pi) * speed * 0.5,
+                            ],
+                            frame=random.randint(0, 7),
+                        )
+                    )
+                self.game.sparks.append(
+                    Spark(self.rect().center, 0, 5 + random.random())
+                )
+                self.game.sparks.append(
+                    Spark(self.rect().center, math.pi, 5 + random.random())
+                )
+                return True
 
     def render(self, surf: pygame.Surface, offset=(0, 0)):
         super().render(surf, offset=offset)

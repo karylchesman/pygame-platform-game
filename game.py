@@ -4,12 +4,12 @@ import sys
 
 import pygame
 
-from scripts.spark import Spark
-from scripts.utils import load_image, load_images, Animation
-from scripts.entities import Player, Enemy
-from scripts.tilemap import TileMap
 from scripts.clouds import Clouds
+from scripts.entities import Enemy, Player
 from scripts.particle import Particle
+from scripts.spark import Spark
+from scripts.tilemap import TileMap
+from scripts.utils import Animation, load_image, load_images
 
 
 class Game:
@@ -124,8 +124,10 @@ class Game:
             self.tile_map.render(self.display, offset=render_scroll)
 
             for enemy in self.enemies.copy():
-                enemy.update(self.tile_map, (0, 0))
+                kill = enemy.update(self.tile_map, (0, 0))
                 enemy.render(self.display, offset=render_scroll)
+                if kill:
+                    self.enemies.remove(enemy)
 
             self.player.update(self.tile_map, (self.movement[1] - self.movement[0], 0))
             self.player.render(self.display, offset=render_scroll)
