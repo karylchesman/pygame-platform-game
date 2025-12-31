@@ -65,6 +65,8 @@ class Game:
         self.tile_map = TileMap(self, tile_size=16)
         self.load_level(0)
 
+        self.screen_shake = 0
+
     def load_level(self, map_id):
         self.tile_map.load(f"data/maps/{map_id}.json")
         self.leaf_spawners = []
@@ -91,6 +93,8 @@ class Game:
     def run(self):
         while True:
             self.display.blit(self.assets["background"], (0, 0))
+
+            self.screen_shake = max(0, self.screen_shake - 1)
 
             if self.dead:
                 self.dead += 1
@@ -173,6 +177,7 @@ class Game:
                     if self.player.rect().collidepoint(projectile[0]):
                         self.projectiles.remove(projectile)
                         self.dead += 1
+                        self.screen_shake = max(16, self.screen_shake)
                         for i in range(30):
                             angle = random.random() * math.pi * 2
                             speed = random.random() * 5
@@ -228,9 +233,13 @@ class Game:
                         self.movement[0] = False
                     if event.key == pygame.K_RIGHT:
                         self.movement[1] = False
-
+            screen_shake_offset = (
+                random.random() * self.screen_shake - self.screen_shake / 2,
+                random.random() * self.screen_shake - self.screen_shake / 2,
+            )
             self.screen.blit(
-                pygame.transform.scale(self.display, self.screen.get_size()), (0, 0)
+                pygame.transform.scale(self.display, self.screen.get_size()),
+                screen_shake_offset,
             )
             pygame.display.update()
             self.clock.tick(60)
