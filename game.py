@@ -1,4 +1,5 @@
 import math
+import os
 import random
 import sys
 
@@ -61,9 +62,11 @@ class Game:
         self.sparks = []
         self.scroll = [0.0, 0.0]
         self.dead = 0
+        self.level = 0
+        self.level_transition = -30
 
         self.tile_map = TileMap(self, tile_size=16)
-        self.load_level(0)
+        self.load_level(self.level)
 
         self.screen_shake = 0
 
@@ -89,6 +92,7 @@ class Game:
 
         self.scroll = [0.0, 0.0]
         self.dead = 0
+        self.level_transition = -30
 
     def run(self):
         while True:
@@ -96,10 +100,20 @@ class Game:
 
             self.screen_shake = max(0, self.screen_shake - 1)
 
+            if not len(self.enemies):
+                self.level_transition += 1
+                if self.level_transition > 30:
+                    self.level = min(self.level + 1, len(os.listdir("data/maps")) - 1)
+                    self.load_level(self.level)
+            if self.level_transition < 0:
+                self.level_transition += 1
+
             if self.dead:
                 self.dead += 1
+                if self.dead >= 10:
+                    self.level_transition = min(30, self.level_transition + 1)
                 if self.dead > 40:
-                    self.load_level(0)
+                    self.load_level(self.level)
 
             self.scroll[0] += (
                 # The X position of the center of the player in the world, not on display
@@ -233,6 +247,18 @@ class Game:
                         self.movement[0] = False
                     if event.key == pygame.K_RIGHT:
                         self.movement[1] = False
+
+            if self.level_transition:
+                transition_surf = pygame.Surface(self.display.get_size())
+                pygame.draw.circle(
+                    transition_surf,
+                    (255, 255, 255),
+                    (self.display.get_width() // 2, self.display.get_height() // 2),
+                    (30 - abs(self.level_transition)) * 8,
+                )
+                transition_surf.set_colorkey((255, 255, 255))
+                self.display.blit(transition_surf, (0, 0))
+
             screen_shake_offset = (
                 random.random() * self.screen_shake - self.screen_shake / 2,
                 random.random() * self.screen_shake - self.screen_shake / 2,
