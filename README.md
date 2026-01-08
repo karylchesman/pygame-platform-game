@@ -75,11 +75,11 @@ To build standalone executables for the game and level editor, you can use `PyIn
     - Windows example:
 
     ```bash
-    python -m PyInstaller game.py --noconsole --add-data data:.
+    python -m PyInstaller game.py --noconsole --add-data data:./data
     ```
 
 3. The built executables will be located in the `dist` folder within the project directory.
 
-NOTE: The `--add-data data:.` flag is used to include the game assets located in the `data` folder, since PyInstaller does not include non-Python files by default.
+NOTE: The `--add-data data:./data` flag is used to include the game assets located in the `data` folder, since PyInstaller does not include non-Python files by default.
 
 For any other clarifications about using PyInstaller, please refer to the [PyInstaller documentation](https://pyinstaller.org/en/stable/).

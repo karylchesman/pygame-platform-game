@@ -2,6 +2,7 @@ import math
 import os
 import random
 import sys
+from pathlib import Path
 
 import pygame
 
@@ -11,6 +12,8 @@ from scripts.particle import Particle
 from scripts.spark import Spark
 from scripts.tilemap import TileMap
 from scripts.utils import Animation, load_image, load_images
+
+DATA_PATH = Path(__file__).parent / "data"
 
 
 class Game:
@@ -54,12 +57,14 @@ class Game:
             "projectile": load_image("/projectile.png"),
         }
 
+        BASE_SFX_PATH = DATA_PATH / "sfx"
+
         self.sfx = {
-            "jump": pygame.mixer.Sound("data/sfx/jump.wav"),
-            "dash": pygame.mixer.Sound("data/sfx/dash.wav"),
-            "hit": pygame.mixer.Sound("data/sfx/hit.wav"),
-            "shoot": pygame.mixer.Sound("data/sfx/shoot.wav"),
-            "ambience": pygame.mixer.Sound("data/sfx/ambience.wav"),
+            "jump": pygame.mixer.Sound(f"{BASE_SFX_PATH}/jump.wav"),
+            "dash": pygame.mixer.Sound(f"{BASE_SFX_PATH}/dash.wav"),
+            "hit": pygame.mixer.Sound(f"{BASE_SFX_PATH}/hit.wav"),
+            "shoot": pygame.mixer.Sound(f"{BASE_SFX_PATH}/shoot.wav"),
+            "ambience": pygame.mixer.Sound(f"{BASE_SFX_PATH}/ambience.wav"),
         }
 
         self.sfx["ambience"].set_volume(0.2)
@@ -88,7 +93,7 @@ class Game:
         self.screen_shake = 0
 
     def load_level(self, map_id):
-        self.tile_map.load(f"data/maps/{map_id}.json")
+        self.tile_map.load(DATA_PATH / "maps" / f"{map_id}.json")
         self.leaf_spawners = []
         for tree in self.tile_map.extract([("large_decor", 2)], keep=True):
             self.leaf_spawners.append(
@@ -112,7 +117,7 @@ class Game:
         self.level_transition = -30
 
     def run(self):
-        pygame.mixer.music.load("data/music.wav")
+        pygame.mixer.music.load(DATA_PATH / "music.wav")
         pygame.mixer.music.set_volume(0.3)
         pygame.mixer.music.play(-1)
 
@@ -127,7 +132,9 @@ class Game:
             if not len(self.enemies):
                 self.level_transition += 1
                 if self.level_transition > 30:
-                    self.level = min(self.level + 1, len(os.listdir("data/maps")) - 1)
+                    self.level = min(
+                        self.level + 1, len(os.listdir(DATA_PATH / "maps")) - 1
+                    )
                     self.load_level(self.level)
             if self.level_transition < 0:
                 self.level_transition += 1

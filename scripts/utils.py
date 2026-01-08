@@ -1,8 +1,9 @@
 import os
+from pathlib import Path
 
 import pygame
 
-BASE_IMG_PATH = "data/images"
+BASE_IMG_PATH = Path(__file__).parent.parent / "data" / "images"
 
 
 def load_image(path: str) -> pygame.Surface:
