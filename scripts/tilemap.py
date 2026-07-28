@@ -155,9 +155,9 @@ class TileMap:
         with open(filename, "w") as f:
             json.dump(
                 {
-                    "tilemap": self.tile_map,
+                    "tile_map": self.tile_map,
                     "tile_size": self.tile_size,
-                    "offgrid": self.off_grid_tiles,
+                    "off_grid_tiles": self.off_grid_tiles,
                 },
                 f,
             )
@@ -165,6 +165,6 @@ class TileMap:
     def load(self, filename):
         with open(filename, "r") as f:
             data = json.load(f)
-            self.tile_map = data["tilemap"]
+            self.tile_map = data["tile_map"]
             self.tile_size = data["tile_size"]
-            self.off_grid_tiles = data["offgrid"]
+            self.off_grid_tiles = data["off_grid_tiles"]
